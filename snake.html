@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+
+    <head>
+        <link rel="stylesheet" href="styles.css">
+
+    </head>
+ <body>
+                <div class = "navbar" href="styles.css">
+                <a href = "index.html">Home</a>
+                <a href = "resume.html">Resume</a>
+                <a href = "photos.html">Photos</a>
+                <a href = "geoquiz.html">Geoquiz</a>
+        </div>
+    </body>
+<div>
+      <h2>Snake Game</h2>
+      <p>
+          In the classic arcade game, Snake, you control a continuously moving line that grows longer each time it consumes food. 
+          The goal is to achieve the highest score possible by navigating the snake to eat while avoiding collisions with the      
+          creen boundaries or its own ever-expanding body.
+      </p>
+
+      <canvas id="gameCanvas" width="800" height="450" style="background-color: teal;"></canvas>
+      <button onclick="startGame()">Start</button>
+</div>
+
+<script>
+
+    // ===== GLOBALS =====
+    let canvas, ctx;
+    let head;
+    let snake;
+    let apple;
+
+    // ===== CLASS =====
+    class Apple {
+        constructor() {
+            this.x = Math.floor(Math.random() * 800);
+            this.y = Math.floor(Math.random() * 450);
+            this.size = 20;
+
+    }
+        draw(ctx) {
+            ctx.fillStyle = "red";
+            ctx.fillRect(this.x, this.y, this.size, this.size);
+        }
+    }
+    class Head {
+        constructor(x, y) {
+            this.x = x;
+            this.y = y;
+            this.size = 20;
+            this.color = "blue";
+
+            this.speed = 5;
+            this.dx = this.speed;
+            this.dy = 0;
+        }
+
+        draw(ctx) {
+            ctx.fillStyle = this.color;
+            ctx.fillRect(this.x, this.y, this.size, this.size);
+        }
+
+        move() {
+            this.x += this.dx;
+            this.y += this.dy;
+        }
+    }
+
+    class Segment {
+        constructor(x, y) {
+            this.x = x;
+            this.y = y;
+            this.size = 20;
+            this.color = "blue";
+        }
+
+        draw(ctx) {
+            ctx.fillStyle = this.color;
+            ctx.fillRect(this.x, this.y, this.size, this.size);
+        }
+
+        move(seg) {
+            this.x = seg.x;
+            this.y = seg.y;
+        }
+    }
+    // ===== SETUP =====
+    function startGame() {
+        canvas = document.getElementById("gameCanvas");
+        ctx = canvas.getContext("2d");
+
+        head = new Head(200, 200);
+        snake = [head];
+        apple = new Apple()
+        document.addEventListener("keydown", handleKeys);
+
+        gameLoop();
+    }
+    function isColliding(obj, other) {
+        return (
+          obj.x < other.x + other.size &&
+          obj.x + obj.size > other.x &&
+          obj.y < other.y + other.size &&
+          obj.y + obj.size > other.y
+        );
+
+ }
+    // ===== GAME LOOP =====
+    
+    function gameLoop() {
+        update();
+        draw();
+        requestAnimationFrame(gameLoop);
+    }
+
+    function update() {
+        for (let i=snake.length-1; i>0;i-=1){
+            snake[i].move(snake[i-1]);
+        }
+        head.move();
+        if (isColliding(head, apple)) {
+            snake.push(new Segment(snake[snake.length-1].x, snake[snake.length-1].y));
+            apple=new Apple();
+        }
+        for (let i=8;i<snake.length-1;i++) {
+            if (isColliding(head, snake[i])) {
+                snake=[]
+                head=null
+            if (head.x<0 || head.y<0 || head.x>canvas.width || head.y>canvas.height) {
+                snake=[]
+                head=null
+            }
+        }
+    }
+}
+
+    // ===== DRAW =====
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        head.draw(ctx);
+        apple.draw(ctx);
+        for(let i=1; i<snake.length;i++) {
+            snake[i].draw(ctx);
+        }
+        
+    }
+
+    // ===== CONTROLS =====
+    function handleKeys(e) {
+        if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
+            e.preventDefault();
+        }
+
+        if (e.key === "ArrowUp" && head.dy !== head.speed) {
+            head.dy = -head.speed;
+            head.dx = 0;
+        }
+
+        if (e.key === "ArrowDown" && head.dy !== -head.speed) {
+            head.dy = head.speed;
+            head.dx = 0;
+        }
+
+        if (e.key === "ArrowLeft" && head.dx !== head.speed) {
+            head.dy = 0;
+            head.dx = -head.speed;
+        }
+
+        if (e.key === "ArrowRight" && head.dx !== -head.speed) {
+            head.dy = 0;
+            head.dx = head.speed;
+        }
+    }
+
+</script>

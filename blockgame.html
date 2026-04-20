@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+    <head>
+        <link rel="stylesheet" href="styles.css">
+
+    </head>
+    <body>
+                <div class = "navbar" href="styles.css">
+                <a href = "index.html">Home</a>
+                <a href = "resume.html">Resume</a>
+                <a href = "photos.html">Photos</a>
+                <a href = "geoquiz.html">Geoquiz</a>
+        </div>
+    </body>
+<h2>Block Push Game</h2>
+
+<h3>Push blocks by touching them. You can push two at a time.</h3>
+
+<canvas id="gameCanvas" width="500" height = "500" style = "background-color: gray;">  </canvas>
+
+<script>
+    let canvas, ctx;
+    const PLAYER_SIZE = 30;
+    const BLOCK_SIZE = 40;
+    const SPEED = 5;
+    //Classes
+
+    class Player{
+        constructor(x,y){
+            this.x=x
+            this.y=y
+            this.size=30;
+        }
+        draw(){
+            ctx.fillStyle="blue";
+            ctx.fillRect(this.x, this.y, this.size);
+        }
+    }
+    function startGame(){
+        canvas = document.getElementById("gameCanvas")
+        ctx=canvas.getContext("2d");
+        player= new Player(235,235);
+
+        document.addEventListener("keydown, handleKeys");
+
+        draw();
+
+    }
+    function move(dx, dy){
+        let newX = player.x + dx;
+        let newY=player.y + dx;
+        if (newX<0 || newY<0 || newX>canvas.width || newY>canvas.height){
+            return
+        }
+
+        playerx=newX
+        playerY=newY
+        draw();
+
+    }
+
+    function draw(){
+        ctx.clearRect(0,0,canvas.width, canvas.height);
+        player.draw();
+    }
+
+    function handleKeys(e){
+        if (e.key==="ArrowUp"){
+            move(0,-SPEED);
+        }
+        if (e.key==="ArrowDown"){
+            move(0,SPEED);
+        }
+        if (e.key==="ArrowLeft"){
+            move(-SPEED,0);
+        }
+        if (e.key==="ArrowRight"){
+            move(SPEED,0);
+        }
+    }
+    
+</script>

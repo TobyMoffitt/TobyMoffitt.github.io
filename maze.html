@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+
+    <head>
+        <link rel="stylesheet" href="styles.css">
+
+    </head>
+ <body>
+                <div class = "navbar" href="styles.css">
+                <a href = "index.html">Home</a>
+                <a href = "resume.html">Resume</a>
+                <a href = "photos.html">Photos</a>
+                <a href = "geoquiz.html">Geoquiz</a>
+        </div>
+ </body>
+<div>
+      <h2>Snake Game</h2>
+      <p>
+         Maze Game
+      </p>
+
+      <canvas id="gameCanvas" width="300" height="300" style="background-color: teal;"></canvas>
+    <button onclick="startGame()">Start</button>
+</div>
+
+<script>
+
+    // ===== GLOBALS =====
+    let canvas, ctx;
+    class Tile {
+        constructor(type, x, y) {
+            this.x = x*25;
+            this.y = y*25;
+            this.size = 25;
+            this.type=["white","brown","yellow","red","green"][type];
+            this.number=type;
+
+        }
+            draw(ctx) {
+                ctx.fillStyle = this.type;
+                ctx.fillRect(this.x, this.y, this.size, this.size);
+            }
+    }
+
+    class Head {
+        constructor(x, y) {
+            this.x = x;
+            this.y = y;
+            this.size = 20;
+            this.color = "blue";
+
+            this.speed = 1;
+            this.dx = this.speed;
+            this.dy = 0;
+        }
+
+        draw(ctx) {
+            ctx.fillStyle = this.color;
+            ctx.fillRect(this.x, this.y, this.size, this.size);
+        }
+
+        move() {
+            this.x += this.dx;
+            this.y += this.dy;
+        }
+    }
+
+
+    let rawMaze = [
+        [1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [1,0,0,0,0,0,0,1,0,0,0,1,1],
+        [1,0,1,1,1,1,0,1,0,1,0,1,1],
+        [1,0,0,0,0,1,0,0,0,1,0,1,1],
+        [1,1,1,1,0,0,1,1,1,1,0,1,1],
+        [1,0,0,0,1,0,0,0,0,1,0,1,1],
+        [1,0,1,0,1,0,1,1,0,1,0,1,1],
+        [1,0,1,0,0,0,1,1,0,1,2,1,1],
+        [1,0,1,1,1,1,1,0,0,1,1,1,1],
+        [1,0,1,0,0,0,1,1,1,1,1,1,1],
+        [1,0,0,0,1,0,0,0,0,3,4,1,1],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1],
+    ];
+    
+    function gameLoop() {
+        update();
+        draw();
+        requestAnimationFrame(gameLoop);
+    }
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let y=0; y<rawMaze.length-1;y++) {
+            for (let x=0; x<rawMaze[y].length-1;x++) {
+                rawMaze[y][x].draw(ctx);
+            }
+        }
+        head.draw(ctx);
+
+    }
+    function update() {
+        head.move();
+        for (let y=0; y<rawMaze.length-1;y++) {
+            for (let x=0; x<rawMaze[y].length-1;x++) {
+                if (isColliding(rawMaze[y][x],head) && rawMaze[y][x].number === 1) {
+                    head.dx = -head.dx
+                    head.dy = -head.dy
+                }
+            }
+        }
+    }
+        function isColliding(obj, other) {
+        return (
+          obj.x < other.x + other.size &&
+          obj.x + obj.size > other.x &&
+          obj.y < other.y + other.size &&
+          obj.y + obj.size > other.y
+        );
+
+ }
+    function startGame() {
+        canvas = document.getElementById("gameCanvas");
+        ctx = canvas.getContext("2d");
+        for (let y=0; y<rawMaze.length-1;y++) {
+            for (let x=0; x<rawMaze[y].length-1;x++) {
+                rawMaze[y][x]=new Tile(rawMaze[y][x],x,y);
+            }
+        }
+        head = new Head(25,25);
+        document.addEventListener("keydown", handleKeys);
+        gameLoop();
+    }
+function handleKeys(e) {
+        if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
+            e.preventDefault();
+        }
+
+        if (e.key === "ArrowUp" && head.dy !== head.speed) {
+            head.dy = -head.speed;
+            head.dx = 0;
+        }
+
+        if (e.key === "ArrowDown" && head.dy !== -head.speed) {
+            head.dy = head.speed;
+            head.dx = 0;
+        }
+
+        if (e.key === "ArrowLeft" && head.dx !== head.speed) {
+            head.dy = 0;
+            head.dx = -head.speed;
+        }
+
+        if (e.key === "ArrowRight" && head.dx !== -head.speed) {
+            head.dy = 0;
+            head.dx = head.speed;
+        }
+    }
+</script>

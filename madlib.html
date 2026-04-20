@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+
+
+    <head>
+        <link rel="stylesheet" href="styles.css">
+        <title>MadLib</title>
+
+    </head>
+<body>
+                <div class = "navbar" href="styles.css">
+                <a href = "index.html">Home</a>
+                <a href = "resume.html">Resume</a>
+                <a href = "photos.html">Photos</a>
+                <a href = "geoquiz.html">Geoquiz</a>
+        </div>
+<!-- WELCOME SCREEN -->
+<div id="welcomeScreen" style="text-align: center;">
+<h1>Mad Libs</h1>
+<p>
+MadLibs is a game where you create a story from a base model by chosing words to fill in blanks.
+</p>
+<button onclick="startQuiz()">Start Game</button>
+</div>
+
+<!-- QUIZ CONTENT (hidden at start) -->
+<div id="quizContainer" style="text-align: center; display: none;">
+
+<h2 id="question"></h2>
+
+<input id="answerInput" type="text" placeholder="Enter your answer">
+
+<br><br>
+
+<button onclick="checkAnswer()">Submit Answer</button>
+
+<p id="feedback"></p>
+
+
+
+<script>
+        const answers = []
+        let quizData = [{type: "Adjective"},
+                        {type: "Noun"},
+                        {type: "Verb"},
+                        {type: "Noun"},
+                        {type: "Adjective"},
+                        {type: "Noun"},
+                        {type: "Verb"}
+
+        ];
+        let currentQuestion=0;
+
+        function loadQuestion(){
+                let currentthing = quizData[currentQuestion].type;
+                document.getElementById("question").innerText = "Enter a random " + currentthing + ":";
+        }
+
+        function checkAnswer(){
+                let userAnswer = document.getElementById("answerInput").value;
+
+                answers.push(userAnswer)
+
+                currentQuestion++;
+                if (currentQuestion < quizData.length){
+                        loadQuestion();
+
+                }else{
+                        document.getElementById("question").innerText = "Yesterday, I saw a "+answers[0]+" "+answers[1]+" trying to "+answers[2]+" a giant "+answers[3]+". It was so "+answers[4]+" that I accidentally dropped my "+answers[5]+" and started to "+answers[6]+"!"
+                }
+        }
+
+        function startQuiz(){
+                document.getElementById("welcomeScreen").style.display = "none";
+                document.getElementById("quizContainer").style.display = "block";
+                loadQuestion();
+        }
+</script>
+
+</div>
+</body>
