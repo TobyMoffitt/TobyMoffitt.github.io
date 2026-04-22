@@ -133,22 +133,22 @@ function handleKeys(e) {
             e.preventDefault();
         }
 
-        if (e.key === "ArrowUp" && head.dy !== head.speed) {
+        if (e.key === "ArrowUp") {
             head.dy = -head.speed;
             head.dx = 0;
         }
 
-        if (e.key === "ArrowDown" && head.dy !== -head.speed) {
+        if (e.key === "ArrowDown") {
             head.dy = head.speed;
             head.dx = 0;
         }
 
-        if (e.key === "ArrowLeft" && head.dx !== head.speed) {
+        if (e.key === "ArrowLeft") {
             head.dy = 0;
             head.dx = -head.speed;
         }
 
-        if (e.key === "ArrowRight" && head.dx !== -head.speed) {
+        if (e.key === "ArrowRight") {
             head.dy = 0;
             head.dx = head.speed;
         }
